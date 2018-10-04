@@ -18,7 +18,7 @@ public final class FactorialClient {
     static final boolean SSL = System.getProperty("ssl") != null;
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", "8322"));
-    static final int COUNT = Integer.parseInt(System.getProperty("count", "1000"));
+    static final int COUNT = Integer.parseInt(System.getProperty("count", "10"));
 
     public static void main(String[] args) throws Exception {
         // Configure SSL.
@@ -43,6 +43,7 @@ public final class FactorialClient {
             // Get the handler instance to retrieve the answer.
             FactorialClientHandler handler =
                     (FactorialClientHandler) f.channel().pipeline().last();
+
 
             // Print out the answer.
             System.err.format("Factorial of %,d is: %,d", COUNT, handler.getFactorial());

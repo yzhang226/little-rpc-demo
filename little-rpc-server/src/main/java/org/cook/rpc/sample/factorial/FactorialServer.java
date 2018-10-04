@@ -17,7 +17,7 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 public final class FactorialServer {
 
     static final boolean SSL = System.getProperty("ssl") != null;
-    static final int PORT = Integer.parseInt(System.getProperty("port", "8322"));
+    static final int PORT = Integer.parseInt(System.getProperty("port", "8323"));
 
     public static void main(String[] args) throws Exception {
         // Configure SSL.
