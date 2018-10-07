@@ -1,6 +1,7 @@
 package org.cook.rpc.sample.factorial;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -18,7 +19,7 @@ public final class FactorialClient {
     static final boolean SSL = System.getProperty("ssl") != null;
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", "8322"));
-    static final int COUNT = Integer.parseInt(System.getProperty("count", "10"));
+    static final int COUNT = Integer.parseInt(System.getProperty("count", "5"));
 
     public static void main(String[] args) throws Exception {
         // Configure SSL.
@@ -44,9 +45,14 @@ public final class FactorialClient {
             FactorialClientHandler handler =
                     (FactorialClientHandler) f.channel().pipeline().last();
 
+            if (f.isSuccess()) {
+                Void x = f.getNow();
+
+            }
+
 
             // Print out the answer.
-            System.err.format("Factorial of %,d is: %,d", COUNT, handler.getFactorial());
+//            System.err.format("Factorial of %,d is: %,d", COUNT, handler.getFactorial());
         } finally {
             group.shutdownGracefully();
         }

@@ -2,6 +2,8 @@ package org.cook.rpc.sample.seri;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,11 @@ import java.util.List;
  */
 public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
 
+    private static final Logger logger = LoggerFactory.getLogger(ObjectEchoClientHandler.class);
+
     private final List<Integer> firstMessage;
+
+    private int count;
 
     /**
      * Creates a client-side handler.
@@ -23,19 +29,36 @@ public class ObjectEchoClientHandler extends ChannelInboundHandlerAdapter {
         for (int i = 0; i < ObjectEchoClient.SIZE; i++) {
             firstMessage.add(Integer.valueOf(i));
         }
+        logger.info("new ObjectEchoClientHandler is {}", this);
+    }
+
+    private List<Integer> createMessage() {
+        List<Integer> firstMessage = new ArrayList<Integer>(ObjectEchoClient.SIZE);
+        for (int i = 0; i < max(); i++) {
+            firstMessage.add(Integer.valueOf(i));
+        }
+        return firstMessage;
+    }
+
+    public int max() {
+        return ObjectEchoClient.SIZE - count;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        logger.info("channelActive - handler is {}", this);
         // Send the first message if this handler is a client-side handler.
-        ctx.writeAndFlush(firstMessage);
+        ctx.writeAndFlush(createMessage());
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        count++;
         // Echo back the received object to the server.
-//        System.out.println("client receive msg is " + msg);
-        ctx.write(msg);
+        logger.info("client receive msg is {}", msg);
+        if (count < 5) {
+            ctx.write(createMessage());
+        }
     }
 
     @Override

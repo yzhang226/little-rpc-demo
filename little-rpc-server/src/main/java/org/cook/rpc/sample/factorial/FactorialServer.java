@@ -1,6 +1,7 @@
 package org.cook.rpc.sample.factorial;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -36,7 +37,10 @@ public final class FactorialServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new FactorialServerInitializer(sslCtx));
+                    .childHandler(new FactorialServerInitializer(sslCtx))
+//                    .childOption(ChannelOption.SO_BACKLOG, 128)
+//                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    ;
 
             b.bind(PORT).sync().channel().closeFuture().sync();
         } finally {

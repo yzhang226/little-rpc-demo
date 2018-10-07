@@ -2,6 +2,8 @@ package org.cook.rpc.sample.factorial;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 
@@ -14,21 +16,37 @@ import java.math.BigInteger;
  */
 public class FactorialServerHandler extends SimpleChannelInboundHandler<BigInteger> {
 
-    private BigInteger lastMultiplier = new BigInteger("1");
-    private BigInteger factorial = new BigInteger("1");
+    private static final Logger logger = LoggerFactory.getLogger(FactorialServerHandler.class);
+
+//    private BigInteger lastMultiplier = new BigInteger("1");
+//    private BigInteger factorial = new BigInteger("1");
+
+    public FactorialServerHandler() {
+        logger.info("new FactorialServerHandler is {}", this);
+    }
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, BigInteger msg) throws Exception {
+        long s1 = System.currentTimeMillis();
         // Calculate the cumulative factorial and send it to the client.
-        System.out.println("server received msg is " + msg);
-        lastMultiplier = msg;
-        factorial = factorial.multiply(msg);
+        logger.info("server received msg is {}", msg);
+//        BigInteger lastMultiplier = new BigInteger("1");
+        BigInteger factorial = new BigInteger("1");
+
+        for (long i=1; i<=msg.longValue(); i++) {
+//            lastMultiplier = msg;
+            factorial = factorial.multiply(BigInteger.valueOf(i));
+        }
+
+        logger.info("server received msg is {}, factorial is {}, elapsed {} ms", msg, factorial, System.currentTimeMillis() - s1);
+
         ctx.writeAndFlush(factorial);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.err.printf("Factorial of %,d is: %,d%n", lastMultiplier, factorial);
+//        System.err.printf("Factorial of %,d is: %,d%n", lastMultiplier, factorial);
+        logger.info("channelInactive this is {}, ctx is {}", this, ctx);
     }
 
     @Override

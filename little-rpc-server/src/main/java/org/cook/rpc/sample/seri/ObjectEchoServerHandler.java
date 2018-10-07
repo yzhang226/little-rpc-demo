@@ -2,6 +2,8 @@ package org.cook.rpc.sample.seri;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles both client-side and server-side handler depending on which
@@ -9,10 +11,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public class ObjectEchoServerHandler extends ChannelInboundHandlerAdapter {
 
+    private static final Logger logger = LoggerFactory.getLogger(ObjectEchoServerHandler.class);
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // Echo back the received object to the client.
-//        System.out.println("server receive msg is " + msg);
+        logger.info("server receive msg is {}", msg);
         ctx.write(msg);
     }
 

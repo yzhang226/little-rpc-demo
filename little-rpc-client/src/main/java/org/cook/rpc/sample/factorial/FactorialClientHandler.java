@@ -4,10 +4,13 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Handler for a client-side channel.  This handler maintains stateful
@@ -18,48 +21,53 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class FactorialClientHandler extends SimpleChannelInboundHandler<BigInteger> {
 
+    private static final Logger logger = LoggerFactory.getLogger(FactorialClientHandler.class);
+
     private ChannelHandlerContext ctx;
     private int receivedMessages;
+    private AtomicInteger count = new AtomicInteger(0);
     private int next = 1;
-    final BlockingQueue<BigInteger> answer = new LinkedBlockingQueue<BigInteger>();
+//    final BlockingQueue<BigInteger> answer = new LinkedBlockingQueue<BigInteger>();
 
-    public BigInteger getFactorial() {
-        boolean interrupted = false;
-        try {
-            for (; ; ) {
-                try {
-                    return answer.take();
-                } catch (InterruptedException ignore) {
-                    interrupted = true;
-                }
-            }
-        } finally {
-            if (interrupted) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+//    public BigInteger getFactorial() {
+//        boolean interrupted = false;
+//        try {
+//            for (; ; ) {
+//                try {
+//                    return answer.take();
+//                } catch (InterruptedException ignore) {
+//                    interrupted = true;
+//                }
+//            }
+//        } finally {
+//            if (interrupted) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
+//    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         this.ctx = ctx;
-        sendNumbers();
+//        ctx.writeAndFlush(FactorialClient.COUNT);
+//        sendNumbers();
     }
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, final BigInteger msg) {
         receivedMessages++;
-        System.out.println("client channel count[" + receivedMessages + "], read msg " + msg);
-        if (receivedMessages == FactorialClient.COUNT) {
-            // Offer the answer after closing the connection.
-            ctx.channel().close().addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) {
-                    boolean offered = answer.offer(msg);
-                    assert offered;
-                }
-            });
-        }
+        count.incrementAndGet();
+        logger.info("channelRead0 client channel count#{} {}, read msg# {}", receivedMessages, count.get(), msg);
+//        if (receivedMessages == FactorialClient.COUNT) {
+//            // Offer the answer after closing the connection.
+//            ctx.channel().close().addListener(new ChannelFutureListener() {
+//                @Override
+//                public void operationComplete(ChannelFuture future) {
+//                    boolean offered = answer.offer(msg);
+//                    assert offered;
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -68,29 +76,29 @@ public class FactorialClientHandler extends SimpleChannelInboundHandler<BigInteg
         ctx.close();
     }
 
-    private void sendNumbers() {
-        // Do not send more than 4096 numbers.
-        ChannelFuture future = null;
-        for (int i = 0; i < 4096 && next <= FactorialClient.COUNT; i++) {
-            future = ctx.write(Integer.valueOf(next));
-            next++;
-        }
-        if (next <= FactorialClient.COUNT) {
-            assert future != null;
-            future.addListener(numberSender);
-        }
-        ctx.flush();
-    }
+//    private void sendNumbers() {
+//        // Do not send more than 4096 numbers.
+//        ChannelFuture future = null;
+//        for (int i = 0; i < 4096 && next <= FactorialClient.COUNT; i++) {
+//            future = ctx.write(Integer.valueOf(next));
+//            next++;
+//        }
+//        if (next <= FactorialClient.COUNT) {
+//            assert future != null;
+//            future.addListener(numberSender);
+//        }
+//        ctx.flush();
+//    }
 
-    private final ChannelFutureListener numberSender = new ChannelFutureListener() {
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            if (future.isSuccess()) {
-                sendNumbers();
-            } else {
-                future.cause().printStackTrace();
-                future.channel().close();
-            }
-        }
-    };
+//    private final ChannelFutureListener numberSender = new ChannelFutureListener() {
+//        @Override
+//        public void operationComplete(ChannelFuture future) throws Exception {
+//            if (future.isSuccess()) {
+//                sendNumbers();
+//            } else {
+//                future.cause().printStackTrace();
+//                future.channel().close();
+//            }
+//        }
+//    };
 }

@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by cook on 2018/10/4
  */
-public class FactorialChannelPoolHandler implements ChannelPoolHandler {
+public class MyChannelPoolHandler implements ChannelPoolHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(FactorialChannelPoolHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(MyChannelPoolHandler.class);
 
     @Override
     public void channelReleased(Channel ch) throws Exception {
@@ -31,6 +31,9 @@ public class FactorialChannelPoolHandler implements ChannelPoolHandler {
     @Override
     public void channelCreated(Channel ch) throws Exception {
         logger.info("channelCreated ch is {}", ch);
+
+//        SocketChannel channel = (SocketChannel) ch;
+//        channel.con
 
         ChannelPipeline pipeline = ch.pipeline();
 
@@ -48,5 +51,11 @@ public class FactorialChannelPoolHandler implements ChannelPoolHandler {
 
         // and then business logic.
         pipeline.addLast(new FactorialClientHandler());
+
+//        pipeline.addLast(
+//                new ObjectEncoder(),
+//                new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+//                new ObjectEchoClientHandler());
+
     }
 }

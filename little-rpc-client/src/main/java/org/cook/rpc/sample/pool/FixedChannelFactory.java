@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by cook on 2018/10/4
@@ -32,18 +33,26 @@ public class FixedChannelFactory extends AbstractChannelPoolMap<InetSocketAddres
 
     @Override
     protected FixedChannelPool newPool(InetSocketAddress key) {
-        return new FixedChannelPool(cb.remoteAddress(key), new FactorialChannelPoolHandler(), 8, 8);
+        return new FixedChannelPool(cb.remoteAddress(key), new MyChannelPoolHandler(), maxConns, maxPendings);
     }
 
     public Future<Channel> acquire(InetSocketAddress addr) {
         final FixedChannelPool pool = this.get(addr);
         Future<Channel> f = pool.acquire();
+        f.getNow();
+        try {
+            Channel ch = f.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         return f;
     }
 
     public void release(InetSocketAddress addr, Channel ch) {
         SocketAddress address = ch.localAddress();
-        logger.info("ch.localAddress() is {}, addr is {}", ch.localAddress(), addr);
+//        logger.info("ch.localAddress() is {}, addr is {}", ch.localAddress(), addr);
         final FixedChannelPool pool = this.get(addr);
         pool.release(ch);
     }
