@@ -12,6 +12,7 @@
         <module>little-rpc-client</module>
         <module>little-rpc-common</module>
         <module>little-rcp-monitor</module>
+        <module>little-rpc-empty</module>
     </modules>
     <packaging>pom</packaging>
 
