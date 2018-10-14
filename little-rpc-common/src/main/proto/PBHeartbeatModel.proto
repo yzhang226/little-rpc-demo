@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package org.cook.rpc.helix.model.protobuf;
+
+message PBHeartbeatModel {
+
+    int32 beat = 1;
+
+}
