@@ -32,7 +32,7 @@ public class MessageSendInterceptor implements MethodInterceptor {
         SimpleHost host2 = new SimpleHost("127.0.0.1", 8323);
         configuration = new ChannelPoolConfiguration(Lists.newArrayList(host1, host2), new MyChannelPoolHandler());
     }
-    decode
+
     @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 
