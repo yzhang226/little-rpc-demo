@@ -1,4 +1,4 @@
-package org.cook.rpc.sample.pool;
+package org.cook.rpc.pool;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,5 +42,21 @@ public class SimpleHost {
     @Override
     public int hashCode() {
         return Objects.hash(hostAddress, port);
+    }
+
+    public String getHostAddress() {
+        return hostAddress;
+    }
+
+    public void setHostAddress(String hostAddress) {
+        this.hostAddress = hostAddress;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

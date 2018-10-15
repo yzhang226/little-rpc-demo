@@ -1,4 +1,4 @@
-package org.cook.rpc.sample.pool;
+package org.cook.rpc.pool;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;

@@ -153,11 +153,13 @@
             <artifactId>dubbo</artifactId>
             <version>2.6.4</version>
         </dependency>
+
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.2</version>
+            <groupId>at.favre.lib</groupId>
+            <artifactId>bytes</artifactId>
+            <version>0.7.1</version>
         </dependency>
+
 
     </dependencies>
 
@@ -169,7 +171,8 @@
                 <version>1.5.0.Final</version>
             </extension>
         </extensions>
-        <plugins>
+
+        <!--<plugins>-->
             <!--<plugin>-->
                 <!--<groupId>org.xolstice.maven.plugins</groupId>-->
                 <!--<artifactId>protobuf-maven-plugin</artifactId>-->
@@ -188,24 +191,12 @@
                     <!--</execution>-->
                 <!--</executions>-->
             <!--</plugin>-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.11</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <complianceLevel>1.8</complianceLevel>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+
+        <!--</plugins>-->
+
+                <!--
+                <phase>process-classes</phase>
+                -->
     </build>
 
 </project>

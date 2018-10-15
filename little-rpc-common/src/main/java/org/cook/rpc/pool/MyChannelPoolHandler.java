@@ -1,4 +1,4 @@
-package org.cook.rpc.sample.pool;
+package org.cook.rpc.pool;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -7,7 +7,6 @@ import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
 import org.cook.rpc.sample.common.BigIntegerDecoder;
 import org.cook.rpc.sample.common.NumberEncoder;
-import org.cook.rpc.sample.factorial.FactorialClientHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,7 @@ public class MyChannelPoolHandler implements ChannelPoolHandler {
         pipeline.addLast(new NumberEncoder());
 
         // and then business logic.
-        pipeline.addLast(new FactorialClientHandler());
+//        pipeline.addLast(new FactorialClientHandler());
 
 //        pipeline.addLast(
 //                new ObjectEncoder(),

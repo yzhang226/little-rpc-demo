@@ -4,9 +4,12 @@ import com.google.common.collect.Lists;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.pool2.impl.DefaultEvictionPolicy;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.cook.rpc.pool.ChannelPoolConfiguration;
+import org.cook.rpc.pool.MyChannelPoolHandler;
+import org.cook.rpc.pool.PooledChannelFactory;
+import org.cook.rpc.pool.SimpleHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,19 +29,10 @@ public class CommonsPoolClient {
         SimpleHost host1 = new SimpleHost("127.0.0.1", 8322);
         SimpleHost host2 = new SimpleHost("127.0.0.1", 8323);
 
-        PooledChannelFactory factory = new PooledChannelFactory(Lists.newArrayList(host1, host2), new MyChannelPoolHandler());
 
-        GenericObjectPoolConfig<Channel> conf = new GenericObjectPoolConfig<>();
-        conf.setMaxTotal(6);
-        conf.setMaxIdle(4);
-        conf.setMinIdle(2);
+        ChannelPoolConfiguration configuration = new ChannelPoolConfiguration(Lists.newArrayList(host1, host2), new MyChannelPoolHandler());
 
-        conf.setMaxWaitMillis(5 * 1000);
-        conf.setTestWhileIdle(true);
-        conf.setTestOnBorrow(true);
-        conf.setTimeBetweenEvictionRunsMillis(15 * 1000);
-
-        GenericObjectPool<Channel> pool = new GenericObjectPool<>(factory, conf);
+        GenericObjectPool<Channel> pool = configuration.create();
 
         for (int i=0; i<20; i++) {
             // Do somethings
@@ -55,7 +49,7 @@ public class CommonsPoolClient {
 
         pool.close();
 
-        factory.shutdown();
+//        factory.shutdown();
 
     }
 
@@ -64,6 +58,7 @@ public class CommonsPoolClient {
         ChannelFuture lastWriteFuture = null;
         try {
             ch = pool.borrowObject();
+
             lastWriteFuture = ch.writeAndFlush(RandomUtils.nextInt(20, 100));
 //                 Wait until all messages are flushed before closing the channel.
             if (lastWriteFuture != null) {

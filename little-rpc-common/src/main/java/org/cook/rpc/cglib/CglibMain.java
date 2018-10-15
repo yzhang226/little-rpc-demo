@@ -11,27 +11,26 @@ public class CglibMain {
 
     public static void main(String[] args) {
         Enhancer enhancer = new Enhancer();
-//        Enhancer.create()
-        enhancer.setSuperclass(TestCglibModel.class);
+        enhancer.setSuperclass(TestCglibInterface.class);
         Callback interceptor = new MethodInterceptor() {
             @Override
             public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
                 System.out.println("meth " + method);
 //                Object ret = method.invoke(o, args);
-                Object ret = methodProxy.invokeSuper(o, args);
-                System.out.println("ref of invoke is " + ret);
+//                Object ret = methodProxy.invokeSuper(o, args);
+//                System.out.println("ref of invoke is " + ret);
 
-                return null;
+                return "abcdedf";
             }
         };
 
         CallbackFilter filter = new CallbackFilter() {
             @Override
             public int accept(Method method) {
-                if ("test1".equals(method.getName())) {
-                    System.out.println("ignore method - " + method.getName());
-                    return 1;
-                }
+//                if ("test1".equals(method.getName())) {
+//                    System.out.println("ignore method - " + method.getName());
+//                    return 1;
+//                }
                 return 0;
             }
         };
@@ -40,14 +39,12 @@ public class CglibMain {
         enhancer.setCallbacks(callbacks);
         enhancer.setCallbackFilter(filter);
 
-        TestCglibModel mo = (TestCglibModel) enhancer.create();
+        TestCglibInterface mo = (TestCglibInterface) enhancer.create();
 
-        mo.printHello();
-        System.out.println("--");
-        mo.test1();
-        System.out.println("--");
-        mo.test2();
-        System.out.println("--");
+        String a = mo.testA(11);
+        System.out.println("--" + a);
+        String b = mo.test1(22);
+        System.out.println("--" + b);
 
     }
 

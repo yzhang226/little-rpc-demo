@@ -1,9 +1,9 @@
 package org.cook.rpc;
 
-import com.google.protobuf.Any;
-import com.google.protobuf.Int32Value;
+import com.google.protobuf.*;
 import org.cook.rpc.helix.model.protobuf.PBHeartbeatModel;
 import org.cook.rpc.helix.model.protobuf.PBInputParameter;
+import org.cook.rpc.helix.utils.MessageParserFactory;
 import org.cook.rpc.sample.model.clock.DayOfWeek;
 import org.cook.rpc.sample.model.clock.LocalTime;
 import org.cook.rpc.sample.model.clock.LocalTimes;
@@ -77,6 +77,13 @@ public class AppTest {
         PBInputParameter parsed = PBInputParameter.parseFrom(baos.toByteArray());
         System.out.println(Int32Value.parseFrom(parsed.getParameters(0).getValue()).getValue());
         System.out.println(Int32Value.parseFrom(parsed.getParameters(1).getValue()).getValue());
+
+        MessageParserFactory.registerMessageParserByClass(PBInputParameter.class);
+        Parser pa = MessageParserFactory.getParser(PBInputParameter.class);
+
+        PBInputParameter parameter = (PBInputParameter) pa.parseFrom(baos.toByteArray());
+        System.out.println(Int32Value.parseFrom(parameter.getParameters(0).getValue()).getValue());
+        System.out.println(Int32Value.parseFrom(parameter.getParameters(1).getValue()).getValue());
 
     }
 

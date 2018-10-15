@@ -13,14 +13,10 @@ public class TestAnnoAspectj {
     private static final Logger logger = LoggerFactory.getLogger(TestAnnoAspectj.class);
 
 //    @Pointcut("within(@org.cook.rpc.rpc.OneAnno *)")
-    @Pointcut("execution(@org.cook.rpc.rpc.OneAnno * *(..))")
+    //
+//    @Pointcut("execution(@org.cook.rpc.rpc.OneAnno * *(..))")
+    @Pointcut("execution(public * ((@org.cook.rpc.rpc.OneAnno *)+).*(..)) && within(@org.cook.rpc.rpc.OneAnno *)")
     public void beanAnnotatedWithMonitor() {}
-
-    @Pointcut("execution(public * *(..))")
-    public void publicMethod() {}
-
-    @Pointcut("publicMethod() && beanAnnotatedWithMonitor()")
-    public void publicMethodInsideAClassMarkedWithAtMonitor() {}
 
     @Around("beanAnnotatedWithMonitor()")
     public Object rpcClient(ProceedingJoinPoint join) throws Throwable {
